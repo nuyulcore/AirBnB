@@ -2,15 +2,16 @@
 """
 User Class from Models Module
 """
-from datetime.datetime import utcnow, timedelta
+from datetime import datetime, timedelta
 import hashlib
 import jwt
 import models
 from models.base_model import BaseModel, Base
 import os
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, DateTime
 from uuid import uuid4
+utcnow = datetime.utcnow
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 
 
@@ -43,7 +44,7 @@ class User(BaseModel, Base):
                 User.__set_password(self, pwd)
                 super().__init__(*args, **kwargs)
 
-    def pass_encryption(self, pwd):
+    def pass_encryption(pwd):
         """
         encrypts input to encypted string
         """
@@ -56,7 +57,7 @@ class User(BaseModel, Base):
         """
             custom setter: encrypts password to MD5
         """
-        secure_password = self.pass_encryption(pwd)
+        secure_password = User.pass_encryption(pwd)
         setattr(self, "password", secure_password)
 
     def encode_auth_token(self, user_id):
@@ -72,7 +73,7 @@ class User(BaseModel, Base):
             }
             return jwt.encode(
                 payload,
-                'SECRET_KEY', """changed from app.config.get('SECRET_KEY')"""
+                'SECRET_KEY',
                 algorithm='HS256'
             )
         except Exception as e:
@@ -106,7 +107,9 @@ class BlacklistToken(BaseModel, Base):
     if STORAGE_TYPE == "db":
         __tablename__ = 'blacklist_tokens'
         token = Column(String(500), unique=True, nullable=False)
-        blacklisted_on = Column(DateTime, nullable=False, datetime.utcnow())
+        blacklisted_on = Column(
+            DateTime, nullable=False, default=datetime.utcnow()
+        )
 
         def __init__(self, token):
             """
