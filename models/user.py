@@ -6,14 +6,15 @@ from datetime import datetime, timedelta
 import hashlib
 import jwt
 import models
+from models import authentication_secret
 from models.base_model import BaseModel, Base
 import os
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from uuid import uuid4
-from authentication_secret import SECRET_KEY
 utcnow = datetime.utcnow
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
+SECRET_KEY = authentication_secret.SECRET_KEY
 
 
 class User(BaseModel, Base):
