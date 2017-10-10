@@ -20,13 +20,13 @@ def amenities_no_id(amenity_id=None):
         return jsonify(all_amenities)
 
     if request.method == 'POST':
-        req_json = request.get_json()
-        if req_json is None:
+        req_data = request.get_json()
+        if req_data is None:
             abort(400, 'Not a JSON')
-        if req_json.get('name') is None:
+        if req_data.get('name') is None:
             abort(400, 'Missing name')
         Amenity = CNC.get('Amenity')
-        new_object = Amenity(**req_json)
+        new_object = Amenity(**req_data)
         new_object.save()
         return jsonify(new_object.to_json()), 201
 
@@ -50,8 +50,8 @@ def amenities_with_id(amenity_id=None):
         return jsonify({}), 200
 
     if request.method == 'PUT':
-        req_json = request.get_json()
-        if req_json is None:
+        req_data = request.get_json()
+        if req_data is None:
             abort(400, 'Not a JSON')
-        amenity_obj.bm_update(req_json)
+        amenity_obj.bm_update(req_data)
         return jsonify(amenity_obj.to_json()), 200

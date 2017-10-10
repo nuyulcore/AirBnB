@@ -20,13 +20,13 @@ def states_no_id():
         return jsonify(all_states)
 
     if request.method == 'POST':
-        req_json = request.get_json()
-        if req_json is None:
+        req_data = request.get_json()
+        if req_data is None:
             abort(400, 'Not a JSON')
-        if req_json.get("name") is None:
+        if req_data.get("name") is None:
             abort(400, 'Missing name')
         State = CNC.get("State")
-        new_object = State(**req_json)
+        new_object = State(**req_data)
         new_object.save()
         return jsonify(new_object.to_json()), 201
 
@@ -50,8 +50,8 @@ def states_with_id(state_id=None):
         return jsonify({})
 
     if request.method == 'PUT':
-        req_json = request.get_json()
-        if req_json is None:
+        req_data = request.get_json()
+        if req_data is None:
             abort(400, 'Not a JSON')
-        state_obj.bm_update(req_json)
+        state_obj.bm_update(req_data)
         return jsonify(state_obj.to_json())
