@@ -67,7 +67,7 @@ class User(BaseModel, Base):
         """
         try:
             payload = {
-                'exp': utcnow() + timedelta(days=0, seconds=5),
+                'exp': utcnow() + timedelta(days=0, seconds=3600),
                 'iat': utcnow(),
                 'sub': user_id
             }
@@ -94,9 +94,11 @@ class User(BaseModel, Base):
                 return 'Token blacklisted. Please log in again.'
             else:
                 return payload['sub']
-        except jwt.ExpiredSignatureError:
+        except jwt.ExpiredSignatureError as e:
+            print(e)
             return 'Signature expired. Please log in again.'
-        except jwt.InvalidTokenError:
+        except jwt.InvalidTokenError as e:
+            print(e)
             return 'Invalid token. Please log in again.'
 
 
