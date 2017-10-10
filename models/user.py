@@ -11,6 +11,7 @@ import os
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from uuid import uuid4
+from authentication_secret import SECRET_KEY
 utcnow = datetime.utcnow
 STORAGE_TYPE = os.environ.get('HBNB_TYPE_STORAGE')
 
@@ -73,7 +74,7 @@ class User(BaseModel, Base):
             }
             return jwt.encode(
                 payload,
-                'SECRET_KEY',
+                SECRET_KEY,
                 algorithm='HS256'
             )
         except Exception as e:
@@ -88,7 +89,7 @@ class User(BaseModel, Base):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(auth_token, 'SECRET_KEY')
+            payload = jwt.decode(auth_token, SECRET_KEY)
             is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
             if is_blacklisted_token:
                 return 'Token blacklisted. Please log in again.'
